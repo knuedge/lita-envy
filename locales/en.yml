@@ -1,32 +1,31 @@
 en:
   lita:
     handlers:
-      envy:
-        claim_environment:
+      who_has:
+        claim_thing:
           success: It's all yours!
           failure:
-            env_in_use_by_user: "Hmm, you are already using %{env_id}"
-            env_in_use_by_other_user: "Hmm, %{env_id} is currently in use by %{user}"
-        release_environment:
+            thing_in_use_by_user: "Hmm, you are already using %{thing_id}"
+            thing_in_use_by_other_user: "Hmm, %{thing_id} is currently in use by %{user}"
+        release_thing:
           success: Thanks!
           failure:
-            env_unknown: "Hmm, I do not know about %{env_id}"
-            env_not_in_use_by_user: "Hmm, you are not currently using %{env_id}"
-            env_in_use_by_other_user: "Hmm, you are not currently using %{env_id} (%{user} is)"
-        forget_environment:
+            thing_unknown: "Hmm, I do not know about %{thing_id}"
+            thing_not_in_use_by_user: "Hmm, you are not currently using %{thing_id}"
+            thing_in_use_by_other_user: "Hmm, you are not currently using %{thing_id} (%{user} is)"
+        forget_thing:
           success: Poof! It's gone!
           failure:
-            env_unknown: "Hmm, I do not know about %{env_id}"
-            env_in_use_by_user: "Hmm, you are currently using %{env_id}"
-            env_in_use_by_other_user: "Hmm, %{env_id} is currently in use by %{user}"
-        claim_used_environment:
+            thing_unknown: "Hmm, I do not know about %{thing_id}"
+            thing_in_use_by_user: "Hmm, you are currently using %{thing_id}"
+            thing_in_use_by_other_user: "Hmm, %{thing_id} is currently in use by %{user}"
+        claim_used_thing:
           success: It's all yours!
           failure:
-            env_unknown: "Hmm, I do not know about %{env_id}"
-            env_not_in_use: "Hmm, %{env_id} is not currently in use"
-            env_in_use_by_user: "Hmm, you are already using %{env_id}"
-            env_in_use_by_user_other_than_specified_one: "Hmm, %{env_id} is currently in use by %{user}, not %{specified_user}"
-        list_environments:
+            thing_unknown: "Hmm, I do not know about %{thing_id}"
+            thing_not_in_use: "Hmm, %{thing_id} is not currently in use"
+            thing_in_use_by_user: "Hmm, you are already using %{thing_id}"
+            thing_in_use_by_user_other: "Hmm, %{thing_id} is currently in use by %{user}, not %{specified_user}"
+        list_things:
           failure:
-            no_environments: "Hmm, I do not know about any environments yet"
-
+            no_things: "Hmm, I'm not tracking anything that matches your query"

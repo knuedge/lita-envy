@@ -1,0 +1,27 @@
+Documentation:
+  Exclude:
+    - lib/lita/handlers/who_has.rb
+
+FileName:
+  Exclude:
+    - lib/lita-who_has.rb
+
+Metrics/LineLength:
+  Max: 100
+
+Metrics/AbcSize:
+  Max: 26
+
+Metrics/MethodLength:
+  Max: 30
+
+Metrics/ClassLength:
+  Max: 200
+
+Metrics/BlockLength:
+  Max: 30
+  Exclude:
+    - '*.gemspec'
+    - Rakefile
+    - 'spec/**/*_spec.rb'
+    - 'spec/spec_helper.rb'
