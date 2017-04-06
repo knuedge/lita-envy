@@ -1,9 +1,17 @@
 language: ruby
 rvm:
-  - 2.2
-  - 2.3
+- 2.2
+- 2.3
 script: bundle exec rake
 before_install:
-  - gem update --system
+- gem update --system
 services:
-  - redis-server
+- redis-server
+deploy:
+  provider: rubygems
+  api_key:
+    secure: FyB5zrDHH4umVnmvClHcVfjH+nswGWtzfFWt5SQUHbbLFUn/IxRPb098Lmzho4N9oldRZx2u+9j/wZMEM/65MUmg+RjmUQTmSWd2hs2Ms0azRZDib52cTS7tk/Pga0wbiY6Gx8MAmg9cKHTQlJ/RsgSKo/URHiuiGukQwkHY8bs6nggM62GLOrrJqgxAWaRRvjHVs2srpvSlQTAfA6WjJtmfm3apl/pkNnyTvCtoPUhq2iPJuyByuGBl1SQA5Noj3wKAQ/29q6iEPd7KYYx5sRHsFMfuo8pXwENba1SiERXNBb7f9P3Rcg6i4102DaNIDtTt3cwW1xjKMWIkCxodgiLkqt/PdMmdHL4nT6wNg76/joZJmwLA+w764evugRD7TWAs1pSHdC0IMZUawxBI9PZOGzXd77gY/aPK99f9qAVs9d+za0XY30AbRAcLHLAVBuRTUGRCbxyPLR8GgZtJ7ePrnQ8QjnRf1R8+888M3cI8EXOO0ssFxXwkIUjZBp1MrHMeu88Yy9iy8YK6SIIKOnoGEtCHmIncdzLsFnITLhu9RAnXNbxjOtUGEx294ntXgTgZ0fGWTHON//pYhpkAmfz4rm06i6AtPKf2ejKY4QQhkp2m+m8u6QzqqqTZaIQr340BvGaxPjdVP9bTMC4k1Svj2zc38lIxaJYRgFt3lMc=
+  gem: lita-who_has
+  on:
+    tags: true
+    repo: knuedge/lita-who_has
