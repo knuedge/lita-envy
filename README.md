@@ -1,9 +1,9 @@
 # lita-who_has
 
 [![Build Status](https://travis-ci.org/knuedge/lita-who_has.png?branch=master)](https://travis-ci.org/knuedge/lita-who_has)
-[![Coverage Status](https://coveralls.io/repos/knuedge/lita-who_has/badge.png)](https://coveralls.io/r/knuedge/lita-who_has)
+[![Coverage Status](https://coveralls.io/repos/github/knuedge/lita-who_has/badge.svg)](https://coveralls.io/github/knuedge/lita-who_has)
 
-Record and retrieve information about environment usage
+Record and retrieve information about things
 
 ## Installation
 
