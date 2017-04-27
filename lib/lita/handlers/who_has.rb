@@ -2,6 +2,8 @@ module Lita
   module Handlers
     # The main handler for the WhoHas plugin
     class WhoHas < Handler
+      include Utils::LitaWhoHas::Persistence
+
       route(
         /\Aclaim ([A-Za-z0-9_]+)\Z/,
         :claim_thing,
@@ -27,6 +29,16 @@ module Lita
         /\Aforget ([A-Za-z0-9_]+)\Z/,
         :forget_thing,
         help: { 'forget [THING ID]' => 'Forget thing' },
+        command: true
+      )
+
+      route(
+        /\Adescribe ([A-Za-z0-9_]+)(\s+([A-Za-z0-9_]+)\s+(.+))?\Z/,
+        :describe_thing,
+        help: {
+          'describe [THING ID]' => 'Report on any details for thing',
+          'describe [THING ID] [KEY] [VALUE]' => 'Describe the KEY attribute as VALUE for a thing'
+        },
         command: true
       )
 
@@ -166,14 +178,37 @@ module Lita
         end
       end
 
-      private
-
-      def key(thing_id)
-        ['whohas_things', config.namespace, thing_id].join(':')
-      end
-
-      def current_user(thing_id)
-        redis.hget(key(thing_id), 'user')
+      def describe_thing(response)
+        thing_id, _, attribute, value = response.matches.first
+        owner = current_user(thing_id)
+        case owner
+        when nil
+          response.reply t(
+            'describe_thing.failure.thing_unknown',
+            thing_id: thing_id
+          )
+        when '', response.user.name
+          if attribute && value
+            describe(thing_id, attribute, value)
+            response.reply t(
+              'describe_thing.success', key: attribute, thing_id: thing_id
+            )
+          else
+            response.reply t('describe_thing.description', thing_id: thing_id)
+            response.reply('/code ' + full_description_json(thing_id))
+          end
+        else
+          if attribute && value
+            response.reply t(
+              'describe_thing.failure.thing_in_use_by_other_user',
+              thing_id: thing_id,
+              user: owner
+            )
+          else
+            response.reply t('describe_thing.description', thing_id: thing_id)
+            response.reply('/code ' + full_description_json(thing_id))
+          end
+        end
       end
 
       Lita.register_handler(self)
