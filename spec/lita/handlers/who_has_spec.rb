@@ -11,6 +11,8 @@ describe Lita::Handlers::WhoHas, lita_handler: true do
     it { is_expected.to route_command('claimables').to(:list_things) }
     it { is_expected.to route_command('forget ENV123').to(:forget_thing) }
     it { is_expected.to route_command('wrestle ENV123 from Alicia').to(:claim_used_thing) }
+    it { is_expected.to route_command('describe ENV123').to(:describe_thing) }
+    it { is_expected.to route_command('describe ENV123 key value').to(:describe_thing) }
   end
 
   describe 'User claiming thing' do
@@ -330,6 +332,77 @@ describe Lita::Handlers::WhoHas, lita_handler: true do
         carl = Lita::User.create(123, name: 'Carl')
         send_command('wrestle ENV123 from Ben', as: carl)
         expect(replies.first).to eq('Hmm, I do not know about ENV123')
+      end
+    end
+  end
+  describe 'User describing a thing' do
+    context 'when thing is currently in use by specified user' do
+      before(:each) do
+        subject.redis.hset('whohas_things:my_project:ENV123', 'user', 'Alicia')
+      end
+
+      it 'adds a description key' do
+        alicia = Lita::User.create(123, name: 'Alicia')
+        send_command('describe ENV123 location the moon', as: alicia)
+        expect(subject.redis.hget('whohas_things:my_project:ENV123', 'description'))
+          .to eq({ 'location' => 'the moon' }.to_json)
+        expect(replies.first).to eq('Description \'location\' set for ENV123')
+      end
+
+      it 'allows retrieving a description' do
+        alicia = Lita::User.create(123, name: 'Alicia')
+        subject.redis.hset(
+          'whohas_things:my_project:ENV123',
+          'description',
+          { 'location' => 'the moon' }.to_json
+        )
+        send_command('describe ENV123', as: alicia)
+        expect(replies.first).to eq('Here\'s what I know about ENV123')
+        expect(replies.last).to eq('/code ' + JSON.pretty_generate('location' => 'the moon'))
+      end
+    end
+
+    context 'when thing is unknown to bot' do
+      before(:each) do
+        subject.redis.del('whohas_things:my_project:ENV123')
+      end
+
+      it 'replies with a notification' do
+        alicia = Lita::User.create(123, name: 'Alicia')
+        send_command('describe ENV123', as: alicia)
+        expect(replies.first).to eq('Hmm, I do not know about ENV123')
+      end
+    end
+
+    context 'when thing is in use by another user' do
+      before(:each) do
+        subject.redis.hset('whohas_things:my_project:ENV234', 'user', 'Carl')
+      end
+
+      it 'leaves the thing untouched' do
+        alicia = Lita::User.create(123, name: 'Alicia')
+        send_command('describe ENV234 disposition sunny', as: alicia)
+        expect(subject.redis.hget('whohas_things:my_project:ENV234', 'user')).to eq('Carl')
+      end
+
+      it 'replies with a notification' do
+        alicia = Lita::User.create(123, name: 'Alicia')
+        send_command('describe ENV234  disposition sunny', as: alicia)
+        expect(replies.first).to eq(
+          'I can\'t change the description for ENV234 while it\'s in use by Carl'
+        )
+      end
+
+      it 'allows retrieving a description' do
+        alicia = Lita::User.create(123, name: 'Alicia')
+        subject.redis.hset(
+          'whohas_things:my_project:ENV234',
+          'description',
+          { 'disposition' => 'cloudy' }.to_json
+        )
+        send_command('describe ENV234', as: alicia)
+        expect(replies.first).to eq('Here\'s what I know about ENV234')
+        expect(replies.last).to eq('/code ' + JSON.pretty_generate('disposition' => 'cloudy'))
       end
     end
   end

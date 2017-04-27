@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = 'lita-who_has'
-  spec.version       = '0.2.0'
+  spec.version       = '0.3.0'
   spec.authors       = ['Jonathan Gnagy']
   spec.email         = ['jgnagy@knuedge.com']
   spec.description   = 'A more generic lita-envy for who owns things via lita'

@@ -29,3 +29,9 @@ en:
         list_things:
           failure:
             no_things: "Hmm, I'm not tracking anything that matches your query"
+        describe_thing:
+          success: Description '%{key}' set for %{thing_id}
+          failure:
+            thing_unknown: "Hmm, I do not know about %{thing_id}"
+            thing_in_use_by_other_user: "I can't change the description for %{thing_id} while it's in use by %{user}"
+          description: "Here's what I know about %{thing_id}"
