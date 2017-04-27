@@ -21,6 +21,12 @@ module Utils
       def current_user(thing_id)
         redis.hget(key(thing_id), 'user')
       end
+
+      def full_description_json(thing_id)
+        JSON.pretty_generate(
+          { 'in use by' => current_user(thing_id) }.merge(description(thing_id))
+        )
+      end
     end
   end
 end

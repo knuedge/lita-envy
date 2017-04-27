@@ -358,7 +358,12 @@ describe Lita::Handlers::WhoHas, lita_handler: true do
         )
         send_command('describe ENV123', as: alicia)
         expect(replies.first).to eq('Here\'s what I know about ENV123')
-        expect(replies.last).to eq('/code ' + JSON.pretty_generate('location' => 'the moon'))
+        expect(replies.last).to eq(
+          '/code ' + JSON.pretty_generate(
+            'in use by' => 'Alicia',
+            'location' => 'the moon'
+          )
+        )
       end
     end
 
@@ -402,7 +407,12 @@ describe Lita::Handlers::WhoHas, lita_handler: true do
         )
         send_command('describe ENV234', as: alicia)
         expect(replies.first).to eq('Here\'s what I know about ENV234')
-        expect(replies.last).to eq('/code ' + JSON.pretty_generate('disposition' => 'cloudy'))
+        expect(replies.last).to eq(
+          '/code ' + JSON.pretty_generate(
+            'in use by'   => 'Carl',
+            'disposition' => 'cloudy'
+          )
+        )
       end
     end
   end

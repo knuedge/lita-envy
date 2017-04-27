@@ -180,7 +180,8 @@ module Lita
 
       def describe_thing(response)
         thing_id, _, attribute, value = response.matches.first
-        case current_user(thing_id)
+        owner = current_user(thing_id)
+        case owner
         when nil
           response.reply t(
             'describe_thing.failure.thing_unknown',
@@ -194,18 +195,18 @@ module Lita
             )
           else
             response.reply t('describe_thing.description', thing_id: thing_id)
-            response.reply '/code ' + JSON.pretty_generate(description(thing_id))
+            response.reply('/code ' + full_description_json(thing_id))
           end
         else
           if attribute && value
             response.reply t(
               'describe_thing.failure.thing_in_use_by_other_user',
               thing_id: thing_id,
-              user: current_user(thing_id)
+              user: owner
             )
           else
             response.reply t('describe_thing.description', thing_id: thing_id)
-            response.reply('/code ' + JSON.pretty_generate(description(thing_id)))
+            response.reply('/code ' + full_description_json(thing_id))
           end
         end
       end
