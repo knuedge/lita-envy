@@ -23,8 +23,13 @@ module Utils
       end
 
       def full_description_json(thing_id)
+        owner = current_user(thing_id)
         JSON.pretty_generate(
-          { 'in use by' => current_user(thing_id) }.merge(description(thing_id))
+          if owner && !owner.empty?
+            { 'in use by' => owner }
+          else
+            {}
+          end.merge(description(thing_id))
         )
       end
     end

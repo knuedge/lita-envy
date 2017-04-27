@@ -335,6 +335,7 @@ describe Lita::Handlers::WhoHas, lita_handler: true do
       end
     end
   end
+
   describe 'User describing a thing' do
     context 'when thing is currently in use by specified user' do
       before(:each) do
@@ -362,6 +363,36 @@ describe Lita::Handlers::WhoHas, lita_handler: true do
           '/code ' + JSON.pretty_generate(
             'in use by' => 'Alicia',
             'location' => 'the moon'
+          )
+        )
+      end
+    end
+
+    context 'when thing is available' do
+      before(:each) do
+        subject.redis.hset('whohas_things:my_project:ENV345', 'user', '')
+      end
+
+      it 'adds a description key' do
+        alicia = Lita::User.create(123, name: 'Alicia')
+        send_command('describe ENV345 location mars', as: alicia)
+        expect(subject.redis.hget('whohas_things:my_project:ENV345', 'description'))
+          .to eq({ 'location' => 'mars' }.to_json)
+        expect(replies.first).to eq('Description \'location\' set for ENV345')
+      end
+
+      it 'allows retrieving a description' do
+        alicia = Lita::User.create(123, name: 'Alicia')
+        subject.redis.hset(
+          'whohas_things:my_project:ENV345',
+          'description',
+          { 'location' => 'mars' }.to_json
+        )
+        send_command('describe ENV345', as: alicia)
+        expect(replies.first).to eq('Here\'s what I know about ENV345')
+        expect(replies.last).to eq(
+          '/code ' + JSON.pretty_generate(
+            'location' => 'mars'
           )
         )
       end
